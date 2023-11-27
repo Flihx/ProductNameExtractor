@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Extractor</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Data Extractor</h1>
     <label for="dataInput">Enter Data: </label>
-    <input type="text" id="dataInput">
+    <textarea id="dataInput" rows="5"></textarea>
     <button onclick="startExtraction()">Start Extraction</button>
 
     <h2>Data List:</h2>
     
     <!-- Table structure -->
-    <table>
+    <table id="dataTable">
         <thead>
             <tr>
                 <th>Data Value</th>
@@ -30,17 +29,22 @@
         function startExtraction() {
             var inputData = document.getElementById('dataInput').value;
 
-            fetch('/extract', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ data: inputData })
-            })
-            .then(response => response.json())
-            .then(data => {
-                displayDataList(data);
-            });
+            var result = searchForKeysAndData(inputData, 'eVar42');
+            displayDataList(result);
+        }
+
+        function searchForKeysAndData(inputString, keyToSearch) {
+            var resultList = [];
+
+            var pattern = new RegExp(`${keyToSearch}\\s*=\\s*([^,]+)`, 'g');
+            var match;
+
+            while ((match = pattern.exec(inputString)) !== null) {
+                var value = match[1].trim();
+                resultList.push({ key: keyToSearch, value: value });
+            }
+
+            return resultList;
         }
 
         function displayDataList(dataList) {
@@ -51,7 +55,7 @@
                 var row = tableBody.insertRow();
                 var cell1 = row.insertCell(0);
 
-                cell1.textContent = item;
+                cell1.textContent = item.value;
             });
         }
     </script>
