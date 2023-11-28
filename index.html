@@ -9,6 +9,13 @@
 <body>
     <h1>Data Extractor</h1>
 
+<button onclick="startProcessing()">Start</button>
+    <button onclick="clearData()">Clear</button>
+    <button onclick="highlightResults()">Copy Results</button>
+
+	<br>
+	<br>
+
     <div style="display: flex;">
         <!-- Input Table -->
         <table style="margin-right: 20px;">
@@ -36,10 +43,6 @@
             </tbody>
         </table>
     </div>
-
-    <button onclick="startProcessing()">Start</button>
-    <button onclick="clearData()">Clear</button>
-    <button onclick="highlightResults()">Copy Results</button>
 
     <script>
         function startProcessing() {
