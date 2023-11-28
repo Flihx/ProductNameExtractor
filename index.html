@@ -31,12 +31,16 @@
         </tbody>
     </table>
 
+    <!-- Textarea to display output with "|" between each value -->
+    <textarea id="outputTextarea" rows="5" readonly></textarea>
+
     <script>
         function startExtraction() {
             var inputData = document.getElementById('dataInput').value;
 
             var result = searchForKeysAndData(inputData, 'eVar42');
             displayDataList(result);
+            displayOutput(result);
         }
 
         function searchForKeysAndData(inputString, keyToSearch) {
@@ -65,8 +69,14 @@
             });
         }
 
+        function displayOutput(dataList) {
+            var outputTextarea = document.getElementById('outputTextarea');
+            outputTextarea.value = dataList.map(item => item.value).join(' | ');
+        }
+
         function clearInput() {
             document.getElementById('dataInput').value = '';
+            document.getElementById('outputTextarea').value = '';
         }
     </script>
 </body>
