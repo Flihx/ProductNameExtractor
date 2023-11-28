@@ -20,16 +20,7 @@
     <h2>Data List:</h2>
 
     <!-- Textarea to display output with "|" between each value -->
-    <textarea id="outputTextarea" readonly></textarea>
-
-    <br>
-    
-    <div id="outputDiv"></div>
-
-    <br>
-
-    <p id="output"></p>
-
+    <div id="output"></div>
     <br>
     
     <!-- Table structure -->
@@ -79,15 +70,9 @@
             });
         }
 
-        function displayOutput(dataList) {
-            var outputTextarea = document.getElementById('outputTextarea');
-            outputTextarea.value = dataList.map(item => item.value).join(' | '); 
-
-            var outputDiv = document.getElementById('outputDiv');
-            outputDiv.value = dataList.map(item => item.value).join(' | ');
-
-            var output = document.getElementById('output');
-            output.value = dataList.map(item => item.value).join(' | ');
+        function displayDataList(dataList) {
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = dataList.map(item => item.value).join(' | ');
         }
 
         function clearInput() {
