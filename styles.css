@@ -29,6 +29,10 @@ button:hover {
     background-color: #45a049;
 }
 
+#outputTextarea {
+    border: none;
+}
+
 table {
     border-collapse: collapse;
     width: 50%; /* Adjust the width as needed */
