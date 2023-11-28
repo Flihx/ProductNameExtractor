@@ -8,80 +8,115 @@
 </head>
 <body>
     <h1>Data Extractor</h1>
-    <center><label for="dataInput">Enter Data: </label></center>
-    <br>
-    <center><textarea id="dataInput" rows="5"></textarea></center>
-    <br>
-    <center>
-        <button onclick="clearInput()">Clear</button>
-        <button onclick="startExtraction()">Start Extraction</button>
-    </center>
-	
-	<hr style="border: 2px solid black; margin: 20px 0;">
 
-    <h2>Data String:</h2>
+    <div style="display: flex;">
+        <!-- Input Table -->
+        <table style="margin-right: 20px;">
+            <thead>
+                <tr>
+                    <th>Data Value</th>
+                </tr>
+            </thead>
+            <tbody id="inputTable">
+                <tr>
+                    <td><textarea id="inputData" placeholder="Paste data here" oninput="adjustTextareaHeight(this)"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
 
-    <!-- Textarea to display output with "|" between each value -->
-	<center><div id="output" style="font-size:20px; max-width:50%;">Output will appear here!</div></center>
-    <br>
-	<hr style="border: 2px solid black; margin: 20px 0;">
+        <!-- Result Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="resultTable">
+                <!-- Result rows will be inserted here dynamically -->
+            </tbody>
+        </table>
+    </div>
 
-	<h2>Data Table:</h2>
-	
-    <!-- Table structure -->
-    <table id="dataTable">
-        <thead>
-            <tr>
-                <th>Data Value</th>
-            </tr>
-        </thead>
-        <tbody id="dataList">
-            <!-- Data rows will be inserted here dynamically -->
-        </tbody>
-    </table>
+    <button onclick="startProcessing()">Start</button>
+    <button onclick="clearData()">Clear</button>
+    <button onclick="highlightResults()">Copy Results</button>
 
     <script>
-        function startExtraction() {
-            var inputData = document.getElementById('dataInput').value;
+        function startProcessing() {
+            const inputData = document.getElementById('inputData').value;
 
-            var result = searchForKeysAndData(inputData, 'eVar42');
-            displayDataList(result);
-            displayOutput(result);
+            // Clear result table
+            document.getElementById('resultTable').innerHTML = '';
+
+            // Split the pasted data into lines
+            const lines = inputData.split('\n');
+
+            // Create new rows in the result table based on non-empty pasted data
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine !== '') {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.textContent = extractDataAndJoin(trimmedLine, 'eVar42');
+                    row.appendChild(cell);
+                    document.getElementById('resultTable').appendChild(row);
+                }
+            });
         }
 
-        function searchForKeysAndData(inputString, keyToSearch) {
-            var resultList = [];
+        function extractDataAndJoin(inputString, keyToSearch) {
+            const resultList = [];
 
-            var pattern = new RegExp(`${keyToSearch}\\s*=\\s*([^,]+)`, 'g');
-            var match;
+            const pattern = new RegExp(`${keyToSearch}\\s*=\\s*([^,]+)`, 'g');
+            let match;
 
             while ((match = pattern.exec(inputString)) !== null) {
-                var value = match[1].trim();
-                resultList.push({ key: keyToSearch, value: value });
+                const value = match[1].trim();
+                resultList.push(value);
             }
 
-            return resultList;
+            // Join the extracted data with '|' characters
+            const result = resultList.join(' | ');
+            return result;
         }
 
-        function displayDataList(dataList) {
-            var tableBody = document.getElementById('dataList');
-            tableBody.innerHTML = '';
-
-            dataList.forEach(function(item) {
-                var row = tableBody.insertRow();
-                var cell1 = row.insertCell(0);
-
-                cell1.textContent = item.value;
-            });
-			
-			var outputDiv = document.getElementById('output');
-            outputDiv.innerHTML = dataList.map(item => item.value).join(' | ');
+        function clearData() {
+            // Clear both input and result tables
+            document.getElementById('inputData').value = '';
+            document.getElementById('resultTable').innerHTML = '';
         }
 
-        function clearInput() {
-            document.getElementById('dataInput').value = '';
-            document.getElementById('outputTextarea').value = '';
+        function adjustTextareaHeight(textarea) {
+            // Set the 'rows' attribute based on the number of lines in the textarea
+            textarea.rows = textarea.value.split('\n').length;
         }
+
+		function highlightResults() {
+			const resultCells = document.querySelectorAll('#resultTable td');
+
+			// Concatenate the text content of all result cells with a newline separator
+			const allResults = Array.from(resultCells)
+				.map(cell => cell.textContent)
+				.join('\n');
+
+			// Create a temporary text area
+			const tempTextArea = document.createElement('textarea');
+			tempTextArea.value = allResults;
+
+			// Append the text area to the body and select its content
+			document.body.appendChild(tempTextArea);
+			tempTextArea.select();
+
+			// Copy the selected content to the clipboard
+			document.execCommand('copy');
+
+			// Remove the temporary text area
+			document.body.removeChild(tempTextArea);
+
+			alert('All results copied to clipboard!');
+		}
+
+
     </script>
 </body>
 </html>
