@@ -16,13 +16,17 @@
         <button onclick="clearInput()">Clear</button>
         <button onclick="startExtraction()">Start Extraction</button>
     </center>
+	
+	<hr style="border: 2px solid black; margin: 20px 0;">
 
     <h2>Data List:</h2>
 
     <!-- Textarea to display output with "|" between each value -->
-    <div id="output"></div>
+    <div id="output" style="font-size: 20px;">Output will appear here!</div>
     <br>
-    
+	<hr style="border: 2px solid black; margin: 20px 0;">
+	<br>
+	
     <!-- Table structure -->
     <table id="dataTable">
         <thead>
@@ -68,10 +72,8 @@
 
                 cell1.textContent = item.value;
             });
-        }
-
-        function displayDataList(dataList) {
-            var outputDiv = document.getElementById('output');
+			
+			var outputDiv = document.getElementById('output');
             outputDiv.innerHTML = dataList.map(item => item.value).join(' | ');
         }
 
